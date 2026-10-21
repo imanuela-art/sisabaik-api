@@ -47,8 +47,8 @@ export function tanganiError(error, req, res, next) {
   }
 
   if (status >= 500) {
-    console.error("Server error:", error.code ?? error.name);
-  }
+  console.error("Server error:", error.code ?? error.name);
+}
 
   return res
     .status(status)
