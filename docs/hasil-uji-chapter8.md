@@ -1,34 +1,72 @@
+﻿# Hasil Pengujian Chapter 8 — SisaBaik
 
-# Hasil Pengujian Chapter 8 — SisaBaik
+## Lingkungan Pengujian
 
-## Lingkungan
+- Aplikasi: SisaBaik API
 - Database: sisabaik_dev
-- Server: http://127.0.0.1:3000
+- Backend: Node.js dan Express
+- Database Server: PostgreSQL
+- Base URL: http://127.0.0.1:3000
 - Branch: feature/auth-rbac
 
-## Pengujian Otomatis
+## Hasil Pengujian Otomatis
+
 Perintah:
 node --env-file=.env scripts/uji-auth.js
 
-Hasil:
+Hasil aktual:
 PASS: 44 pemeriksaan HTTP dan assertion kepemilikan/snapshot.
 
-- Penawaran uji: ID 14
-- Pesanan uji: ID 6
+Bukti:
+- Penawaran ID: 14
+- Pesanan ID: 6
+- Empat akun uji otomatis dibuat.
 
-## Pengujian Manual
-- Registrasi dan login Jannie berhasil.
-- Verifikasi penyedia Jannie berhasil.
-- Penawaran aktif berhasil dibuat.
-- Pesanan Siti Baru berhasil dibuat (ID 5).
-- JWT sebelum logout: HTTP 200.
-- JWT setelah logout: HTTP 401.
+## Hasil Pengujian Manual
+
+| Skenario | Hasil Aktual | Status |
+|---|---|---|
+| Registrasi Jannie sebagai penyedia | Berhasil | PASS |
+| Login Jannie | HTTP 200 | PASS |
+| Status awal penyedia | menunggu | PASS |
+| Verifikasi usaha Jannie | terverifikasi | PASS |
+| Membuat penawaran | HTTP 201 | PASS |
+| Membaca penawaran milik sendiri | HTTP 200 | PASS |
+| Registrasi dan login Siti Baru | Berhasil | PASS |
+| Membuat pesanan Siti | Berhasil, ID 5 | PASS |
+| Membaca daftar pesanan Siti | HTTP 200 | PASS |
+| JWT sebelum logout | HTTP 200 | PASS |
+| JWT lama setelah logout | HTTP 401 | PASS |
 
 ## Pemeriksaan Database
-- Pesanan ID 6: total Rp5.000, kuantitas 1.
-- Pesanan ID 5: total Rp10.000, kuantitas 1.
 
-## Pengujian yang Belum Dikonfirmasi
-- Token kedaluwarsa.
-- Rate limiting login dan registrasi.
-- Penolakan token akun nonaktif secara manual.
+Pesanan ID 6:
+- Penyedia: Dapur Rina Uji
+- Total transaksi: Rp5.000
+- Harga penawaran satuan: Rp5.000
+- Kuantitas: 1
+
+Pesanan ID 5:
+- Penyedia: Dapur Jannie
+- Total transaksi: Rp10.000
+- Harga penawaran satuan: Rp10.000
+- Kuantitas: 1
+
+## Pengujian Tambahan yang Perlu Dikonfirmasi
+
+- JWT kedaluwarsa: belum ada hasil manual tercatat.
+- Batas percobaan login 429: belum ada hasil manual tercatat.
+- Batas registrasi 429: belum ada hasil manual tercatat.
+- Penolakan login akun nonaktif: hasil belum dikonfirmasi.
+- Pengujian konkurensi stok: bukti Chapter 7 perlu diperiksa.
+
+## Kesimpulan
+
+Pengujian otomatis Chapter 8 menghasilkan 44 PASS.
+
+Registrasi, login, verifikasi penyedia, pembuatan
+penawaran, pemesanan, serta pencabutan JWT juga
+telah diuji melalui aplikasi.
+
+Hasil pengujian tambahan harus dilengkapi berdasarkan
+respons aktual sebelum laporan dinyatakan selesai.
