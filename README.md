@@ -240,6 +240,139 @@ Dokumentasi proyek meliputi:
 
 Pengembangan berikutnya dapat melanjutkan implementasi antarmuka menggunakan Vue, dengan tetap mempertahankan aturan autentikasi, otorisasi, dan validasi pada backend.
 
-## Integritas Akademik
+## Chapter 9 — Membangun Antarmuka dengan Vue
 
-Pengerjaan proyek berkembang mengikuti kebijakan mata kuliah. Praktik individu wajib dikerjakan sesuai ketentuan dosen, tanpa AI generatif apabila dilarang dalam modul. Mahasiswa wajib memahami dan mampu menjelaskan implementasi, pengujian, serta dokumentasi yang dikumpulkan.
+### 1. Struktur Frontend
+
+Frontend SisaBaik dikembangkan menggunakan Vue 3 dan Vite. Struktur direktori frontend:
+
+```text
+frontend/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── data/
+│   ├── lib/
+│   ├── App.vue
+│   ├── main.js
+│   └── style.css
+├── index.html
+├── package.json
+├── package-lock.json
+└── vite.config.js
+```
+
+### 2. Teknologi dan Dependensi
+
+Teknologi yang digunakan pada frontend:
+
+| Teknologi | Versi |
+|---|---|
+| Node.js | 22.23.2 |
+| npm | 10.9.8 |
+| Vue | 3.5.43 |
+| Vite | 8.3.3 |
+
+### 3. Instalasi dan Menjalankan Frontend
+
+Masuk ke direktori frontend:
+
+```bash
+cd frontend
+```
+
+Instal dependensi:
+
+```bash
+npm install
+```
+
+Jalankan development server:
+
+```bash
+npm run dev
+```
+
+Frontend dapat diakses melalui:
+
+`http://127.0.0.1:5173/`
+
+### 4. Komponen Vue dan Aliran Data
+
+Frontend menggunakan beberapa komponen utama:
+
+- `App.vue`: komponen utama yang mengatur tampilan pembeli dan penyedia.
+- `KartuPenawaran.vue`: menampilkan informasi penawaran makanan.
+- `FilterPenawaran.vue`: menyediakan fitur pencarian dan filter kategori.
+- `FormPenawaran.vue`: menyediakan formulir untuk menambahkan penawaran.
+- `Ikon.vue`: menyediakan ikon SVG yang digunakan pada antarmuka.
+
+Pengelolaan data menggunakan `ref` dan `computed`. Komunikasi antarkomponen menggunakan `props` dan `emits`.
+
+Timer memperbarui waktu secara berkala agar penawaran yang melewati batas waktu tidak lagi ditampilkan sebagai penawaran tersedia.
+
+### 5. Data Latihan dan Batasan Integrasi
+
+Frontend menggunakan data latihan yang dibuat melalui file:
+
+`src/data/penawaran-latihan.js`
+
+Data latihan terdiri dari enam penawaran dengan variasi kategori, harga, stok, status, dan waktu kedaluwarsa.
+
+Data yang ditambahkan melalui formulir hanya disimpan sementara di memori aplikasi. Data akan kembali ke kondisi awal ketika halaman dimuat ulang.
+
+Pada tahap ini, frontend belum terhubung dengan API backend maupun database. Pergantian tampilan pembeli dan penyedia merupakan simulasi antarmuka.
+
+### 6. Build dan Preview
+
+Build frontend untuk produksi dijalankan menggunakan:
+
+```bash
+npm run build
+```
+
+Hasil build:
+
+| Informasi | Hasil |
+|---|---|
+| Status build | Berhasil |
+| Modul diproses | 23 modul |
+| Ukuran CSS | 11.72 kB |
+| Ukuran JavaScript | 100.48 kB |
+| Waktu build | 960 ms |
+
+Untuk menjalankan hasil build secara lokal:
+
+```bash
+npm run preview
+```
+
+Preview dapat diakses melalui:
+
+`http://127.0.0.1:4173/`
+
+### 7. Pengujian Frontend Chapter 9
+
+Pengujian dilakukan secara manual melalui browser untuk memeriksa fungsi dan tampilan antarmuka.
+
+| No. | Pengujian | Hasil |
+|---|---|---|
+| 1 | Menampilkan katalog penawaran | Berhasil |
+| 2 | Pencarian penawaran | Diuji |
+| 3 | Tampilan ketika hasil pencarian kosong | Berhasil |
+| 4 | Filter berdasarkan kategori | Berhasil |
+| 5 | Memilih penawaran | Berhasil |
+| 6 | Menampilkan ringkasan pilihan | Berhasil |
+| 7 | Validasi formulir kosong | Berhasil |
+| 8 | Validasi harga penawaran melebihi harga normal | Berhasil |
+| 9 | Menambahkan penawaran baru | Berhasil |
+| 10 | Pergantian tampilan pembeli dan penyedia | Berhasil |
+| 11 | Reset data setelah halaman dimuat ulang | Berhasil |
+| 12 | Tampilan ilustrasi dan ikon | Berhasil |
+| 13 | Responsivitas pada ukuran layar berbeda | Berhasil |
+| 14 | Navigasi menggunakan keyboard | Berhasil |
+| 15 | Penawaran kedaluwarsa tidak lagi ditampilkan | Berhasil |
+| 16 | Build untuk produksi | Berhasil |
+| 17 | Menjalankan preview hasil build | Diuji |
+
+Pengujian menunjukkan bahwa fitur antarmuka utama berjalan menggunakan data latihan. Integrasi dengan backend belum dilakukan pada tahap ini.
