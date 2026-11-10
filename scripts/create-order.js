@@ -5,7 +5,8 @@ const penawaranId = Number(process.argv[3] ?? 1);
 const kuantitas = Number(process.argv[4] ?? 1);
 
 if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas < 1) {
-  console.error("penawaranId dan kuantitas harus berupa bilangan bulat positif.");
+
+console.error("penawaranId dan kuantitas harus berupa bilangan bulat positif.");
   process.exitCode = 1;
 } else {
   let client;
@@ -13,7 +14,6 @@ if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas 
 
   try {
     client = await pool.connect();
-
     await client.query("BEGIN");
     transaksiDimulai = true;
 
@@ -21,29 +21,23 @@ if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas 
       "SELECT id FROM pengguna WHERE email = $1 AND peran = $2",
       [emailPembeli, "pembeli"]
     );
-
     if (pembeli.rowCount !== 1) throw new Error("Pembeli tidak ditemukan.");
 
     const penawaran = await client.query(
       `SELECT id, penyedia_id, nama, harga_normal, harga_penawaran,
-       stok, status, berakhir_pada
+              stok, status, berakhir_pada
        FROM penawaran
        WHERE id = $1
        FOR UPDATE`,
       [penawaranId]
     );
-
     if (penawaran.rowCount !== 1) throw new Error("Penawaran tidak ditemukan.");
 
     const item = penawaran.rows[0];
-
     if (item.status !== "aktif" || new Date(item.berakhir_pada) <= new Date()) {
       throw new Error("Penawaran tidak aktif atau sudah kedaluwarsa.");
     }
-
-    if (item.stok < kuantitas) {
-      throw new Error(`Stok ${item.nama} tidak mencukupi.`);
-    }
+    if (item.stok < kuantitas) throw new Error(`Stok ${item.nama} tidak mencukupi.`);
 
     const pesanan = await client.query(
       `INSERT INTO pesanan (pembeli_id, penyedia_id)
@@ -51,22 +45,15 @@ if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas 
        RETURNING id`,
       [pembeli.rows[0].id, item.penyedia_id]
     );
-
     const pesananId = pesanan.rows[0].id;
 
     await client.query(
       `INSERT INTO detail_pesanan (
-       pesanan_id, penawaran_id, penyedia_id, kuantitas,
-       harga_normal_satuan, harga_penawaran_satuan
+         pesanan_id, penawaran_id, penyedia_id, kuantitas,
+         harga_normal_satuan, harga_penawaran_satuan
        ) VALUES ($1, $2, $3, $4, $5, $6)`,
-      [
-        pesananId,
-        item.id,
-        item.penyedia_id,
-        kuantitas,
-        item.harga_normal,
-        item.harga_penawaran
-      ]
+      [pesananId, item.id, item.penyedia_id, kuantitas,
+       item.harga_normal, item.harga_penawaran]
     );
 
     await client.query(
@@ -89,7 +76,6 @@ if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas 
 
     await client.query("COMMIT");
     transaksiDimulai = false;
-
     console.log("Pesanan berhasil dibuat:");
     console.table(diperbarui.rows);
   } catch (error) {
@@ -98,9 +84,9 @@ if (!Number.isInteger(penawaranId) || !Number.isInteger(kuantitas) || kuantitas 
         console.error("Rollback gagal:", rollbackError.message);
       });
     }
-
     console.error("Pesanan dibatalkan:", error.message);
-    process.exitCode = 1;
+
+process.exitCode = 1;
   } finally {
     client?.release();
     await pool.end();

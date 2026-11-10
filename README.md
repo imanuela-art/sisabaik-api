@@ -376,3 +376,150 @@ Pengujian dilakukan secara manual melalui browser untuk memeriksa fungsi dan tam
 | 17 | Menjalankan preview hasil build | Diuji |
 
 Pengujian menunjukkan bahwa fitur antarmuka utama berjalan menggunakan data latihan. Integrasi dengan backend belum dilakukan pada tahap ini.
+
+## Chapter 10 — Integrasi Full Stack SisaBaik
+
+### 1. Deskripsi Integrasi
+
+SisaBaik mengintegrasikan frontend Vue 3 dengan REST API Express dan database PostgreSQL. Data penawaran, pengguna, dan pesanan tersimpan di database, bukan lagi menggunakan fixture lokal seperti pada Chapter 9.
+
+Teknologi yang digunakan:
+- Node.js 22.23.2
+- Express 5.1.0
+- Vue 3.5.43
+- Vue Router 4.6.4
+- Vite 8.3.3
+- PostgreSQL
+
+### 2. Menjalankan Aplikasi
+
+**Development**
+
+Dari root proyek, jalankan backend:
+
+```bash
+npm ci
+npm run dev
+```
+
+Pada terminal kedua, jalankan frontend:
+
+```bash
+npm --prefix frontend ci
+npm --prefix frontend run dev
+```
+
+Alamat aplikasi:
+- Frontend: http://127.0.0.1:5173/
+- Backend health: http://127.0.0.1:3000/api/health
+
+Vite menggunakan proxy `/api` menuju backend Express pada port 3000.
+
+**Migrasi Database**
+
+```bash
+npm run db:migrate
+```
+
+Migrasi menambahkan fitur foto, versi edit, status pembayaran, snapshot, dan waktu transaksi tanpa mereset enam tabel dasar.
+
+**Preview Frontend**
+
+```bash
+npm --prefix frontend run build
+npm --prefix frontend run preview
+```
+
+Preview tersedia pada http://127.0.0.1:4173/ dengan backend tetap berjalan pada port 3000.
+
+**Build Lokal Satu Origin**
+
+Hentikan backend development dan preview terlebih dahulu, kemudian jalankan:
+
+```bash
+npm run build
+npm run start:local
+```
+
+Frontend hasil build dan REST API dilayani melalui http://127.0.0.1:3000/.
+
+### 3. Autentikasi dan Hak Akses
+
+Sistem mendukung registrasi pembeli dan penyedia menggunakan email serta kata sandi masing-masing.
+
+- JWT dikirim menggunakan header `Authorization: Bearer`.
+- Token frontend disimpan di memori JavaScript.
+- Refresh halaman menghapus sesi lokal, tetapi tidak menghapus data database.
+- Penyedia baru harus melalui verifikasi usaha.
+- Backend memeriksa identitas, peran, status verifikasi, dan kepemilikan data.
+- Logout mencabut validitas token lama pada server ketika request berhasil.
+
+### 4. Penawaran Makanan
+
+Penyedia terverifikasi dapat membuat dan mengedit penawaran dengan informasi nama, kategori, harga normal, harga penawaran, stok, satuan, status, dan waktu berakhir.
+
+Foto bersifat opsional. File JPEG, PNG, atau WebP maksimal 2 MiB dibaca oleh frontend dan diproses backend menjadi WebP.
+
+Pembaruan penawaran menggunakan field `versi`. Jika data sudah berubah, server dapat mengembalikan `409 OFFER_CHANGED` sehingga pengguna perlu memuat versi terbaru.
+
+### 5. Alur Pesanan dan Pembayaran
+
+Alur normal pesanan:
+
+Menunggu konfirmasi → Dikonfirmasi → Siap diambil → Selesai.
+
+Ketika pesanan dibuat, backend mengambil harga aktual, menyimpan snapshot, dan mereservasi stok.
+
+- Stok tidak dikurangi lagi pada saat konfirmasi atau serah terima.
+- Pembatalan atau penolakan yang sah memulihkan reservasi satu kali.
+- Pembeli hanya dapat membatalkan saat menunggu konfirmasi.
+- Penyedia mengelola konfirmasi, penolakan, kesiapan, pembatalan, serta penyelesaian pesanan sesuai status.
+- Pembayaran dilakukan di tempat saat pengambilan.
+- Pesanan gratis mempunyai status pembayaran `gratis` tanpa pembayaran uang.
+
+### 6. Dashboard Sesuai Peran
+
+Dashboard membaca data agregasi dari endpoint `GET /api/dashboard`.
+
+Dashboard pembeli menampilkan jumlah pesanan, total belanja selesai, penghematan, unit makanan yang diambil, dan pembatalan.
+
+Dashboard penyedia menampilkan pesanan yang perlu dikonfirmasi, penawaran aktif, pendapatan diterima, nilai normal makanan tersalurkan, serta diskon yang diberikan.
+
+Pendapatan dan penghematan aktual dihitung berdasarkan pesanan yang selesai, diambil, dan pembayaran sudah dicatat. Pesanan yang baru direservasi belum dianggap sebagai pendapatan.
+
+### 7. Hasil Pengujian
+
+Pengujian otomatis dilakukan menggunakan:
+
+```bash
+npm run workflow:test
+```
+
+Hasil aktual: **26 dari 26 skenario lulus**.
+
+Pengujian mencakup:
+- Reservasi dan pemulihan stok
+- Pembatasan peran dan kepemilikan data
+- Pembatalan, penolakan, dan perubahan status pesanan
+- Pembayaran di tempat dan pesanan gratis
+- Validasi foto serta konversi WebP
+- Konflik versi edit penawaran
+- Dashboard dan perhitungan lintas halaman
+
+Script melaporkan bahwa fixture pengujian telah dihapus.
+
+Pengujian manual yang telah ditunjukkan meliputi pembuatan pesanan berbayar, pembatalan, konfirmasi, serah terima, serta pemeriksaan dashboard pembeli dan penyedia.
+
+### 8. Keterbatasan
+
+- Sesi login hilang setelah refresh karena token hanya disimpan dalam memori.
+- Belum tersedia payment gateway.
+- Belum tersedia fitur reset password dan verifikasi email otomatis.
+- Belum menggunakan idempotency key untuk mencegah duplikasi POST ketika response terputus.
+- Dashboard belum diperbarui secara realtime.
+- Penghematan biaya penjual belum dapat dihitung karena biaya modal dan pembuangan belum tersedia.
+- Deployment hosting, HTTPS, dan audit lengkap dilanjutkan pada pertemuan berikutnya.
+
+### 9. Pengembangan Selanjutnya
+
+Latihan individual Chapter 10 mencakup penambahan filter status `draft`, `aktif`, `habis`, dan `kedaluwarsa` pada halaman Penawaran Saya, dengan pencarian serta paginasi yang tetap menggunakan server.

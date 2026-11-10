@@ -32,7 +32,6 @@ export function buatDataLatihan(waktu = Date.now()) {
     berakhirPada: new Date(waktu + selisihJam * jam).toISOString(),
     dibuatPada,
   });
-
   return [
     buat(
       1,

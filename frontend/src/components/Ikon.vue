@@ -1,8 +1,5 @@
 <script setup>
-const props = defineProps({
-  nama: { type: String, required: true },
-});
-
+const props = defineProps({ nama: { type: String, required: true } });
 const bentuk = {
   panah: ["M5 12h14", "m13 6 6 6-6 6"],
   kiri: ["M19 12H5", "m11 6-6 6 6 6"],
@@ -53,10 +50,6 @@ const bentuk = {
     aria-hidden="true"
     focusable="false"
   >
-    <path
-      v-for="(d, i) in bentuk[props.nama] ?? bentuk.info"
-      :key="i"
-      :d="d"
-    />
+    <path v-for="(d, i) in bentuk[props.nama] ?? bentuk.info" :key="i" :d="d" />
   </svg>
 </template>
