@@ -5,15 +5,18 @@ import { api } from "./lib/api.js";
 import { sesi, hapusSesi, tandaiKeluar } from "./lib/sesi.js";
 import Ikon from "./components/Ikon.vue";
 import logo from "./assets/brand-mark.svg";
+
 const router = useRouter();
 const route = useRoute();
 const konten = ref(null);
 const menuTerbuka = ref(false);
 const pembukaMenu = ref(null);
+
 function tutupMenu() {
   menuTerbuka.value = false;
   pembukaMenu.value?.focus();
 }
+
 watch(
   () => route.fullPath,
   async () => {
@@ -22,12 +25,14 @@ watch(
     konten.value?.focus();
   },
 );
+
 watch(
   () => sesi.pengguna,
   (p) => {
     if (!p && route.meta.auth) router.replace("/login");
   },
 );
+
 async function logout() {
   if (sesi.keluar) return;
   tandaiKeluar(true);
@@ -46,6 +51,7 @@ async function logout() {
   }
 }
 </script>
+
 <template>
   <a class="lewati" href="#konten" @click.prevent="konten?.focus()"
     >Lewati ke konten</a
@@ -181,7 +187,12 @@ async function logout() {
       </div>
     </div>
     <div class="container footer-bottom">
-      <p>© 2026 SisaBaik</p>
+      <p>
+        © 2026 SisaBaik
+        <span class="footer-credit">
+          Developed &amp; Deployed by <strong>Putri Imanuela</strong>
+        </span>
+      </p>
       <p>Kesempatan kedua untuk makanan yang masih bernilai.</p>
     </div>
   </footer>

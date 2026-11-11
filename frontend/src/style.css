@@ -2458,3 +2458,17 @@ hr {
     padding: 20px;
   }
 }
+
+/* Identitas pengembang untuk footer SisaBaik */
+.footer-credit {
+  display: block;
+  margin-top: 7px;
+  color: #465d50;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.footer-credit strong {
+  color: var(--primary-dark);
+  font-weight: 700;
+}
