@@ -38,17 +38,19 @@ try {
   await transaksi(async (c) => {
     await c.query("SELECT pg_advisory_xact_lock(74091211)");
     const r = await c.query(
-      "SELECT current_database() AS nama,(SELECT ssl FROM pg_stat_ssl WHERE pid=pg_backend_pid()) AS tls",
-    );
-    if (r.rows[0].nama !== tujuan || (cloud && !r.rows[0].tls))
-      throw new Error("Database tujuan atau TLS belum sesuai.");
-    const cek = await c.query(
-      "SELECT COUNT(*)::int AS jumlah FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
-    );
-    if (cek.rows[0].jumlah !== 0)
-      throw new Error(
-        "Database sudah berisi tabel. Gunakan db:migrate, bukan inisialisasi ulang.",
-      );
+  "SELECT current_database() AS nama",
+);
+
+const koneksiTls = c.connection.stream;
+
+if (
+  r.rows[0].nama !== tujuan ||
+  (cloud &&
+    (!koneksiTls?.encrypted ||
+      !koneksiTls?.authorized))
+) {
+  throw new Error("Database tujuan atau TLS belum sesuai.");
+}
     await c.query("SET LOCAL search_path=public");
     await c.query(schema);
     await c.query(migration);
