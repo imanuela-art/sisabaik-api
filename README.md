@@ -5,17 +5,25 @@ SisaBaik adalah proyek berkembang pada mata kuliah Pengembangan Web. Aplikasi in
 ## Capaian Chapter 3
 
 - Mempertahankan semantic HTML dan formulir aksesibel dari Chapter 2.
+
 - Menerapkan CSS cascade, box model, dan custom properties.
+
 - Menggunakan Flexbox untuk navigasi dan kelompok tombol.
+
 - Menggunakan Grid untuk kartu penawaran dan bagian halaman.
+
 - Membangun layout mobile-first dengan media queries.
+
 - Memeriksa kontras, fokus keyboard, reflow, dan konsistensi visual.
 
 ## Halaman Prototipe
 
 - `index.html`: halaman informasi SisaBaik.
+
 - `daftar-penyedia.html`: formulir pendaftaran penyedia.
+
 - `tawarkan-makanan.html`: formulir penawaran makanan berlebih.
+
 - `styles.css`: sistem visual dan layout responsif.
 
 Pada Chapter 3, formulir masih berupa prototipe HTML dan belum terhubung dengan server atau basis data.
@@ -29,10 +37,15 @@ Backend menyediakan REST API untuk mengelola penawaran, pesanan, pengguna, serta
 Fitur yang dikembangkan mencakup:
 
 - Pengelolaan penawaran makanan.
+
 - Pembuatan dan pembacaan pesanan.
+
 - Pengurangan stok melalui transaksi database.
+
 - Registrasi dan login.
+
 - Pembatasan akses berdasarkan peran dan kepemilikan.
+
 - Verifikasi usaha penyedia.
 
 ## Chapter 8 — Autentikasi dan Otorisasi
@@ -42,8 +55,11 @@ Fitur yang dikembangkan mencakup:
 Chapter 8 menggunakan migrasi `database/07_auth.sql` untuk menambahkan dua kolom pada tabel `pengguna`.
 
 | Kolom | Fungsi |
+
 |---|---|
+
 | `kata_sandi_hash` | Menyimpan hash kata sandi pengguna |
+
 | `versi_token` | Mendukung pencabutan token JWT |
 
 Migrasi mempertahankan tabel serta riwayat data dari chapter sebelumnya.
@@ -52,11 +68,11 @@ Migrasi mempertahankan tabel serta riwayat data dari chapter sebelumnya.
 
 SisaBaik mendukung pendaftaran dua jenis akun:
 
-**Pembeli**
+****Pembeli****
 
 Pembeli mendaftar menggunakan nama lengkap, email, dan kata sandi. Akun pembeli dapat digunakan untuk memesan penawaran yang tersedia.
 
-**Penyedia**
+****Penyedia****
 
 Penyedia mengisi identitas akun dan profil usaha, termasuk nama usaha, alamat pengambilan, serta nomor telepon.
 
@@ -83,9 +99,13 @@ Masa berlaku access token dalam konfigurasi Chapter 8 adalah 15 menit.
 Sistem menerapkan pembatasan akses berdasarkan peran pengguna.
 
 | Peran | Hak akses utama |
+
 |---|---|
+
 | Pembeli | Melihat katalog publik dan membuat atau melihat pesanan sendiri |
+
 | Penyedia terverifikasi | Membuat, mengubah, dan menghapus penawaran sendiri serta melihat pesanan yang menjadi tanggung jawab usahanya |
+
 | Penyedia belum terverifikasi | Melihat profil sendiri, tetapi tidak dapat menjalankan operasi bisnis penyedia |
 
 Selain memeriksa peran, backend juga memeriksa kepemilikan resource.
@@ -101,13 +121,17 @@ Verifikasi usaha dilakukan melalui script operator.
 Contoh perintah:
 
 ```bash
+
 npm run penyedia:verifikasi -- jannie.baru@example.test
+
 ```
 
 Perintah penolakan verifikasi:
 
 ```bash
+
 npm run penyedia:verifikasi -- budi.baru@example.test --tolak
+
 ```
 
 Status verifikasi dibaca kembali dari database sehingga perubahan izin dapat diterapkan tanpa pendaftaran akun baru.
@@ -127,14 +151,19 @@ File `.env` tidak boleh dimasukkan ke Git karena dapat mengandung password datab
 Persyaratan lingkungan pengembangan:
 
 - Node.js 22 atau lebih baru.
+
 - PostgreSQL.
+
 - Database lokal `sisabaik_dev`.
+
 - Dependensi proyek telah terpasang.
 
 Pasang dependensi:
 
 ```bash
+
 npm install
+
 ```
 
 Pastikan konfigurasi `.env` dan migrasi database sudah sesuai.
@@ -142,7 +171,9 @@ Pastikan konfigurasi `.env` dan migrasi database sudah sesuai.
 Jalankan server:
 
 ```bash
+
 npm run dev
+
 ```
 
 Server lokal:
@@ -158,11 +189,17 @@ Halaman harus diakses melalui Express, bukan `file://` atau Live Server pada por
 ### 8. Endpoint Autentikasi
 
 | Method | Endpoint | Kegunaan |
+
 |---|---|---|
+
 | POST | `/api/auth/registrasi` | Registrasi pembeli |
+
 | POST | `/api/auth/registrasi-penyedia` | Registrasi penyedia |
+
 | POST | `/api/auth/login` | Login pengguna |
+
 | GET | `/api/auth/saya` | Membaca profil pengguna terautentikasi |
+
 | POST | `/api/auth/logout` | Mencabut seluruh sesi pengguna |
 
 Detail request, response, error, dan aturan otorisasi didokumentasikan dalam `docs/API.md`.
@@ -180,14 +217,23 @@ Aplikasi juga membaca status aktif pengguna ketika memvalidasi permintaan yang m
 Mekanisme keamanan yang digunakan mencakup:
 
 - Hash kata sandi bcrypt.
+
 - Validasi input.
+
 - Validasi dan kedaluwarsa JWT.
+
 - Middleware autentikasi dan otorisasi.
+
 - Pemeriksaan kepemilikan pada operasi database.
+
 - Rate limiting untuk login dan registrasi.
+
 - HTTP security headers melalui Helmet.
+
 - Penolakan field identitas tambahan dari client.
+
 - Token frontend disimpan dalam memori halaman latihan.
+
 - Informasi rahasia tidak ditampilkan dalam response, log, maupun dokumentasi.
 
 ### 11. Pengujian Chapter 8
@@ -199,25 +245,35 @@ Pengujian otomatis menggunakan file:
 Perintah menjalankan pengujian:
 
 ```bash
+
 npm run auth:test
+
 ```
 
 Alternatif:
 
 ```bash
+
 node --env-file=.env scripts/uji-auth.js
+
 ```
 
 Pengujian dijalankan pada server dan database praktikum lokal.
 
-**Hasil aktual pengujian otomatis:**
+****Hasil aktual pengujian otomatis:****
 
 | Keterangan | Hasil |
+
 |---|---|
+
 | Status | PASS |
+
 | Pemeriksaan HTTP | 44 |
+
 | Penawaran uji | ID 14 |
+
 | Pesanan uji | ID 6 |
+
 | Database | `sisabaik_dev` |
 
 Pengujian mencakup registrasi, autentikasi, validasi JWT, pembatasan peran, verifikasi penyedia, kepemilikan penawaran dan pesanan, snapshot transaksi, serta pencabutan token.
@@ -233,7 +289,9 @@ Bukti pengujian dicatat dalam:
 Dokumentasi proyek meliputi:
 
 - `README.md`: panduan dan perkembangan aplikasi.
+
 - `docs/API.md`: kontrak REST API.
+
 - `docs/hasil-uji-chapter8.md`: hasil pengujian autentikasi dan otorisasi.
 
 ### 13. Pengembangan Selanjutnya
@@ -247,19 +305,33 @@ Pengembangan berikutnya dapat melanjutkan implementasi antarmuka menggunakan Vue
 Frontend SisaBaik dikembangkan menggunakan Vue 3 dan Vite. Struktur direktori frontend:
 
 ```text
+
 frontend/
+
 ├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── data/
-│   ├── lib/
-│   ├── App.vue
-│   ├── main.js
-│   └── style.css
+
+│   ├── assets/
+
+│   ├── components/
+
+│   ├── data/
+
+│   ├── lib/
+
+│   ├── App.vue
+
+│   ├── main.js
+
+│   └── style.css
+
 ├── index.html
+
 ├── package.json
+
 ├── package-lock.json
+
 └── vite.config.js
+
 ```
 
 ### 2. Teknologi dan Dependensi
@@ -267,10 +339,15 @@ frontend/
 Teknologi yang digunakan pada frontend:
 
 | Teknologi | Versi |
+
 |---|---|
+
 | Node.js | 22.23.2 |
+
 | npm | 10.9.8 |
+
 | Vue | 3.5.43 |
+
 | Vite | 8.3.3 |
 
 ### 3. Instalasi dan Menjalankan Frontend
@@ -278,19 +355,25 @@ Teknologi yang digunakan pada frontend:
 Masuk ke direktori frontend:
 
 ```bash
+
 cd frontend
+
 ```
 
 Instal dependensi:
 
 ```bash
+
 npm install
+
 ```
 
 Jalankan development server:
 
 ```bash
+
 npm run dev
+
 ```
 
 Frontend dapat diakses melalui:
@@ -302,9 +385,13 @@ Frontend dapat diakses melalui:
 Frontend menggunakan beberapa komponen utama:
 
 - `App.vue`: komponen utama yang mengatur tampilan pembeli dan penyedia.
+
 - `KartuPenawaran.vue`: menampilkan informasi penawaran makanan.
+
 - `FilterPenawaran.vue`: menyediakan fitur pencarian dan filter kategori.
+
 - `FormPenawaran.vue`: menyediakan formulir untuk menambahkan penawaran.
+
 - `Ikon.vue`: menyediakan ikon SVG yang digunakan pada antarmuka.
 
 Pengelolaan data menggunakan `ref` dan `computed`. Komunikasi antarkomponen menggunakan `props` dan `emits`.
@@ -328,23 +415,33 @@ Pada tahap ini, frontend belum terhubung dengan API backend maupun database. Per
 Build frontend untuk produksi dijalankan menggunakan:
 
 ```bash
+
 npm run build
+
 ```
 
 Hasil build:
 
 | Informasi | Hasil |
+
 |---|---|
+
 | Status build | Berhasil |
+
 | Modul diproses | 23 modul |
+
 | Ukuran CSS | 11.72 kB |
+
 | Ukuran JavaScript | 100.48 kB |
+
 | Waktu build | 960 ms |
 
 Untuk menjalankan hasil build secara lokal:
 
 ```bash
+
 npm run preview
+
 ```
 
 Preview dapat diakses melalui:
@@ -356,23 +453,41 @@ Preview dapat diakses melalui:
 Pengujian dilakukan secara manual melalui browser untuk memeriksa fungsi dan tampilan antarmuka.
 
 | No. | Pengujian | Hasil |
+
 |---|---|---|
+
 | 1 | Menampilkan katalog penawaran | Berhasil |
+
 | 2 | Pencarian penawaran | Diuji |
+
 | 3 | Tampilan ketika hasil pencarian kosong | Berhasil |
+
 | 4 | Filter berdasarkan kategori | Berhasil |
+
 | 5 | Memilih penawaran | Berhasil |
+
 | 6 | Menampilkan ringkasan pilihan | Berhasil |
+
 | 7 | Validasi formulir kosong | Berhasil |
+
 | 8 | Validasi harga penawaran melebihi harga normal | Berhasil |
+
 | 9 | Menambahkan penawaran baru | Berhasil |
+
 | 10 | Pergantian tampilan pembeli dan penyedia | Berhasil |
+
 | 11 | Reset data setelah halaman dimuat ulang | Berhasil |
+
 | 12 | Tampilan ilustrasi dan ikon | Berhasil |
+
 | 13 | Responsivitas pada ukuran layar berbeda | Berhasil |
+
 | 14 | Navigasi menggunakan keyboard | Berhasil |
+
 | 15 | Penawaran kedaluwarsa tidak lagi ditampilkan | Berhasil |
+
 | 16 | Build untuk produksi | Berhasil |
+
 | 17 | Menjalankan preview hasil build | Diuji |
 
 Pengujian menunjukkan bahwa fitur antarmuka utama berjalan menggunakan data latihan. Integrasi dengan backend belum dilakukan pada tahap ini.
@@ -384,61 +499,83 @@ Pengujian menunjukkan bahwa fitur antarmuka utama berjalan menggunakan data lati
 SisaBaik mengintegrasikan frontend Vue 3 dengan REST API Express dan database PostgreSQL. Data penawaran, pengguna, dan pesanan tersimpan di database, bukan lagi menggunakan fixture lokal seperti pada Chapter 9.
 
 Teknologi yang digunakan:
+
 - Node.js 22.23.2
+
 - Express 5.1.0
+
 - Vue 3.5.43
+
 - Vue Router 4.6.4
+
 - Vite 8.3.3
+
 - PostgreSQL
 
 ### 2. Menjalankan Aplikasi
 
-**Development**
+****Development****
 
 Dari root proyek, jalankan backend:
 
 ```bash
+
 npm ci
+
 npm run dev
+
 ```
 
 Pada terminal kedua, jalankan frontend:
 
 ```bash
+
 npm --prefix frontend ci
+
 npm --prefix frontend run dev
+
 ```
 
 Alamat aplikasi:
+
 - Frontend: http://127.0.0.1:5173/
+
 - Backend health: http://127.0.0.1:3000/api/health
 
 Vite menggunakan proxy `/api` menuju backend Express pada port 3000.
 
-**Migrasi Database**
+****Migrasi Database****
 
 ```bash
+
 npm run db:migrate
+
 ```
 
 Migrasi menambahkan fitur foto, versi edit, status pembayaran, snapshot, dan waktu transaksi tanpa mereset enam tabel dasar.
 
-**Preview Frontend**
+****Preview Frontend****
 
 ```bash
+
 npm --prefix frontend run build
+
 npm --prefix frontend run preview
+
 ```
 
 Preview tersedia pada http://127.0.0.1:4173/ dengan backend tetap berjalan pada port 3000.
 
-**Build Lokal Satu Origin**
+****Build Lokal Satu Origin****
 
 Hentikan backend development dan preview terlebih dahulu, kemudian jalankan:
 
 ```bash
+
 npm run build
+
 npm run start:local
+
 ```
 
 Frontend hasil build dan REST API dilayani melalui http://127.0.0.1:3000/.
@@ -448,10 +585,15 @@ Frontend hasil build dan REST API dilayani melalui http://127.0.0.1:3000/.
 Sistem mendukung registrasi pembeli dan penyedia menggunakan email serta kata sandi masing-masing.
 
 - JWT dikirim menggunakan header `Authorization: Bearer`.
+
 - Token frontend disimpan di memori JavaScript.
+
 - Refresh halaman menghapus sesi lokal, tetapi tidak menghapus data database.
+
 - Penyedia baru harus melalui verifikasi usaha.
+
 - Backend memeriksa identitas, peran, status verifikasi, dan kepemilikan data.
+
 - Logout mencabut validitas token lama pada server ketika request berhasil.
 
 ### 4. Penawaran Makanan
@@ -471,10 +613,15 @@ Menunggu konfirmasi → Dikonfirmasi → Siap diambil → Selesai.
 Ketika pesanan dibuat, backend mengambil harga aktual, menyimpan snapshot, dan mereservasi stok.
 
 - Stok tidak dikurangi lagi pada saat konfirmasi atau serah terima.
+
 - Pembatalan atau penolakan yang sah memulihkan reservasi satu kali.
+
 - Pembeli hanya dapat membatalkan saat menunggu konfirmasi.
+
 - Penyedia mengelola konfirmasi, penolakan, kesiapan, pembatalan, serta penyelesaian pesanan sesuai status.
+
 - Pembayaran dilakukan di tempat saat pengambilan.
+
 - Pesanan gratis mempunyai status pembayaran `gratis` tanpa pembayaran uang.
 
 ### 6. Dashboard Sesuai Peran
@@ -492,18 +639,27 @@ Pendapatan dan penghematan aktual dihitung berdasarkan pesanan yang selesai, dia
 Pengujian otomatis dilakukan menggunakan:
 
 ```bash
+
 npm run workflow:test
+
 ```
 
-Hasil aktual: **26 dari 26 skenario lulus**.
+Hasil aktual: ****26 dari 26 skenario lulus****.
 
 Pengujian mencakup:
+
 - Reservasi dan pemulihan stok
+
 - Pembatasan peran dan kepemilikan data
+
 - Pembatalan, penolakan, dan perubahan status pesanan
+
 - Pembayaran di tempat dan pesanan gratis
+
 - Validasi foto serta konversi WebP
+
 - Konflik versi edit penawaran
+
 - Dashboard dan perhitungan lintas halaman
 
 Script melaporkan bahwa fixture pengujian telah dihapus.
@@ -513,13 +669,188 @@ Pengujian manual yang telah ditunjukkan meliputi pembuatan pesanan berbayar, pem
 ### 8. Keterbatasan
 
 - Sesi login hilang setelah refresh karena token hanya disimpan dalam memori.
+
 - Belum tersedia payment gateway.
+
 - Belum tersedia fitur reset password dan verifikasi email otomatis.
+
 - Belum menggunakan idempotency key untuk mencegah duplikasi POST ketika response terputus.
+
 - Dashboard belum diperbarui secara realtime.
+
 - Penghematan biaya penjual belum dapat dihitung karena biaya modal dan pembuangan belum tersedia.
+
 - Deployment hosting, HTTPS, dan audit lengkap dilanjutkan pada pertemuan berikutnya.
 
 ### 9. Pengembangan Selanjutnya
 
 Latihan individual Chapter 10 mencakup penambahan filter status `draft`, `aktif`, `habis`, dan `kedaluwarsa` pada halaman Penawaran Saya, dengan pencarian serta paginasi yang tetap menggunakan server.
+
+---
+
+## Chapter 11 — Pengujian, Deployment, dan Dokumentasi Akhir (Minggu 12)
+
+### 1. Teknologi dan arsitektur
+
+SisaBaik merupakan aplikasi *full stack* dengan **Vue 3 + Vue Router + Vite** sebagai frontend, **Node.js + Express** sebagai backend REST API, serta **PostgreSQL** sebagai basis data. Pada deployment publik, frontend hasil build dan API disajikan melalui **satu origin HTTPS** di **Render Free**, sementara database menggunakan **Neon PostgreSQL**.
+
+- Repository: https://github.com/imanuela-art/sisabaik-api
+- Branch deployment: `feature/deployment-sisabaik`
+- Web Service Render: `imanuela-sisabaik` (paket Free)
+- URL publik yang diuji: https://sisabaik-api.onrender.com/
+- Health endpoint: https://sisabaik-api.onrender.com/healthz
+- Health API dan database: https://sisabaik-api.onrender.com/api/health
+- Commit deployment yang diamati pada 17 November 2026: `ce045ff` — `Tambahkan identitas Putri Imanuela pada footer`
+
+> **Penting:** SHA di atas adalah commit pada saat bukti pengujian dikumpulkan. Jika ada perubahan atau commit dokumentasi final, catat SHA deployment terbaru di laporan final dan lakukan pengujian ulang bila diperlukan.
+
+### 2. Menjalankan aplikasi
+
+Persyaratan: Node.js versi 22 yang kompatibel dengan proyek, npm, PostgreSQL lokal, dan variabel lingkungan sesuai contoh konfigurasi. Jangan pernah memasukkan `.env`, `.env.cloud`, password database, atau `JWT_SECRET` ke Git.
+
+**Instalasi dependensi dari root proyek:**
+
+```bash
+npm ci
+npm --prefix frontend ci --include=dev
+```
+
+**Development (dua terminal):**
+
+```bash
+# Terminal 1 — backend
+npm run dev
+
+# Terminal 2 — frontend Vite
+npm --prefix frontend run dev
+```
+
+Frontend development: `http://127.0.0.1:5173/`. Backend dan API: `http://127.0.0.1:3000/`.
+
+**Build serta pengujian satu origin lokal:**
+
+```bash
+npm run build
+npm run start:local
+```
+
+Alamat satu origin lokal: `http://127.0.0.1:3000/`.
+
+**Start server menggunakan konfigurasi lingkungan:**
+
+```bash
+npm start
+```
+
+**Konfigurasi deployment Render yang dipakai:**
+
+```text
+Build Command: npm ci && npm --prefix frontend ci --include=dev && npm run build
+Start Command: npm start
+Health Check Path: /healthz
+Branch: feature/deployment-sisabaik
+Instance: Free
+```
+
+Environment Variables diatur melalui dashboard Render dan tidak ditulis beserta nilainya dalam dokumentasi publik. Database cloud dibuat sebelumnya di Neon; **jangan mengulang inisialisasi skema pada database yang sudah berisi data**.
+
+### 3. Pendaftaran, login, dan peninjauan usaha
+
+1. Buka URL publik, pilih **Daftar**, lalu pilih peran **Pembeli** atau **Penyedia usaha**.
+2. Pembeli mengisi nama lengkap, email, kata sandi, dan konfirmasi kata sandi; sesudah berhasil mendaftar, pilih **Login**.
+3. Penyedia mengisi identitas akun dan profil usaha. Setelah pendaftaran, status awal usaha adalah **Menunggu peninjauan**.
+4. Peninjauan/verifikasi usaha dilakukan oleh operator yang memiliki akses administratif. Untuk akun uji cloud, tersedia perintah `npm run penyedia:verifikasi:cloud -- EMAIL_UJI`; tindakan ini **mengubah status pada database cloud**. Perintah harus dijalankan hanya untuk akun uji yang memang diizinkan.
+5. Penyedia masuk ke **Profil usaha**, menekan **Periksa status**, kemudian dapat mengelola penawaran setelah status terverifikasi.
+
+Akun uji untuk penilaian dapat dibuat melalui halaman **Daftar**. Jika kredensial diminta dosen, bagikan **melalui kanal privat**, bukan README atau dokumen publik. Email uji berdomain `.test` hanya untuk simulasi dan bukan alamat kotak masuk nyata.
+
+### 4. Fitur dan definisi metrik
+
+**Pembeli:** katalog, pencarian dan filter, pemesanan, melihat status pesanan, pembatalan sesuai ketentuan, dan dashboard pribadi.
+
+**Penyedia terverifikasi:** membuat dan mengedit penawaran (harga, stok, masa aktif, foto opsional), menangani pesanan, mencatat pengambilan/pembayaran, dan dashboard penyedia.
+
+**Alur pesanan utama:** Menunggu konfirmasi → Dikonfirmasi → Siap diambil → Selesai. Pembatalan atau penolakan yang sah mengembalikan reservasi stok; penyelesaian tidak mengurangi stok dua kali.
+
+**Definisi metrik dashboard:**
+
+| Metrik | Definisi/cakupan |
+|---|---|
+| Jumlah pesanan pembeli | Banyaknya pesanan yang tercatat untuk akun pembeli |
+| Total belanja selesai | Nilai pesanan pembeli yang selesai dan sudah tercatat pembayarannya |
+| Penghematan pembeli | Selisih harga normal dengan harga transaksi pada pesanan selesai dan tercatat pembayarannya |
+| Unit makanan diambil | Jumlah unit pada pesanan yang sudah selesai/diambil |
+| Pembatalan | Jumlah pesanan yang berstatus dibatalkan |
+| Pesanan perlu dikonfirmasi | Pesanan penyedia yang masih menunggu keputusan |
+| Penawaran aktif | Penawaran penyedia yang memenuhi status aktif berdasarkan aturan aplikasi |
+| Pendapatan diterima | Pembayaran yang dicatat pada pesanan selesai, bukan nilai pesanan yang baru direservasi |
+| Nilai normal makanan tersalurkan | Akumulasi nilai berdasarkan harga normal untuk makanan yang selesai diserahkan |
+| Diskon diberikan | Selisih harga normal dan harga penawaran untuk transaksi yang selesai |
+
+**Batasan metrik:** Penghematan pembeli merupakan perbandingan harga normal dan harga penawaran, **bukan** keuntungan bersih atau penghematan biaya operasional penjual. Simulasi dampak sosial/lingkungan tidak sama dengan pengukuran dampak lapangan.
+
+### 5. Pengujian dan hasil aktual
+
+**Pengujian otomatis lokal Chapter 10:** `npm run workflow:test` — hasil yang tercatat: **26/26 skenario lulus** pada saat pengujian lokal sebelumnya. Hasil ini bukan pengujian ulang cloud.
+
+**Pengujian deployment publik 17 November 2026:**
+
+```bash
+npm run deploy:test -- https://sisabaik-api.onrender.com
+```
+
+Hasil aktual: **10/10 PASS**, tanpa menulis data:
+
+| No. | Pemeriksaan deployment | Hasil |
+|---:|---|---|
+| 1 | `/healthz` | PASS |
+| 2 | `/api/health` (API + koneksi database) | PASS |
+| 3 | HTML Vue | PASS |
+| 4 | Aset JavaScript dan CSS | PASS |
+| 5 | `/api/tidak-ada` mengembalikan 404 | PASS |
+| 6 | `/api/auth/saya` tanpa otorisasi mengembalikan 401 | PASS |
+| 7 | `/api/dashboard` tanpa otorisasi mengembalikan 401 | PASS |
+| 8 | `/api/pesanan` tanpa otorisasi mengembalikan 401 | PASS |
+| 9 | `/env` mengembalikan 404 | PASS |
+| 10 | `/server.js` mengembalikan 404 | PASS |
+
+**Bukti uji manual cloud yang sudah diperoleh:** pendaftaran pembeli berhasil; login pembeli berhasil; pendaftaran penyedia berhasil; status awal menunggu peninjauan; perubahan status penyedia menjadi terverifikasi melalui script operator; akses halaman penawaran setelah verifikasi; penawaran makanan aktif berhasil dibuat; validasi formulir pendaftaran kosong dan login kosong muncul dengan benar; fokus keyboard terlihat; layout formulir penyedia tampak menyesuaikan viewport mobile 390 × 844. Pengujian proses pesanan penuh, pembayaran, foto upload, dan seluruh kombinasi hak akses cloud **tidak dinyatakan PASS hanya dari screenshot halaman** — statusnya harus dinyatakan berdasarkan pengujian aktual tambahan.
+
+**Audit Lighthouse yang terdokumentasi:**
+
+| Lingkungan/halaman | Browser/kondisi | Performance | Accessibility | Best Practices | SEO |
+|---|---|---:|---:|---:|---:|
+| Lokal, halaman Katalog | Chrome Incognito, viewport 400 × 464 | 98 | 100 | 100 | 100 |
+| Cloud, halaman Login | Microsoft Edge, mobile 390 × 844 | 81 | 100 | 100 | 100 |
+
+Dua hasil di atas **bukan eksperimen sebelum/sesudah terkontrol**: halaman, browser, perangkat, dan lingkungan berbeda. Karena itu, selisih skor tidak boleh diklaim sebagai peningkatan atau penurunan akibat satu perubahan kode.
+
+### 6. Batasan fitur dan layanan gratis
+
+- Belum menggunakan payment gateway: pembayaran dilakukan di tempat saat pengambilan; pesanan gratis tidak memerlukan transfer uang.
+- Belum tersedia reset kata sandi dan verifikasi email otomatis.
+- Sesi frontend menggunakan token di memori sehingga login perlu dilakukan kembali setelah refresh.
+- Belum tersedia pembaruan dashboard *realtime* dan mekanisme *idempotency key* menyeluruh untuk duplikasi POST.
+- Biaya modal, biaya pembuangan, dan biaya operasional penjual belum tersedia; penghematan biaya penjual tidak dapat dihitung secara tepat.
+- Simulasi dampak pengurangan sampah makanan tidak boleh diperlakukan sebagai hasil dampak nyata tanpa pengukuran lapangan.
+- Paket hosting gratis dapat mengalami *spin down* saat tidak aktif dan keterlambatan respons awal. Kuota/kebijakan penyedia layanan dapat berubah.
+
+### 7. Berkas bukti dan tata cara pemeriksaan
+
+Bukti hasil pengujian, screenshot **asli**, laporan audit, matriks pengujian, log yang disamarkan, dan refleksi dikumpulkan di `docs/minggu12/`. Referensi bukti yang telah dikumpulkan mencakup deployment Live, website HTTPS, API health, formulir dan validasinya, pendaftaran/login dua peran, verifikasi penyedia, penawaran aktif, 10 pemeriksaan deployment, responsivitas, Lighthouse lokal/cloud, fokus keyboard, dan status Git.
+
+Langkah pemeriksaan minimum untuk penilai:
+
+1. Buka URL publik dan periksa katalog serta halaman Daftar/Login.
+2. Buka `/healthz` dan `/api/health`.
+3. Daftarkan akun pembeli melalui **Daftar**; login, periksa katalog dan menu sesuai peran.
+4. Daftarkan akun penyedia dan amati status menunggu peninjauan. Verifikasi hanya oleh operator berwenang.
+5. Uji pembuatan penawaran, alur pesanan, stok, pengambilan/pembayaran, serta dashboard sesuai hak akses jika data uji tersedia.
+6. Jalankan `npm run deploy:test -- https://sisabaik-api.onrender.com` dari root proyek.
+7. Periksa Lighthouse, tampilan mobile, fokus keyboard, dan validasi formulir.
+
+**Keamanan dokumentasi:** Jangan commit atau kumpulkan file `.env`, `.env.cloud`, dump database, kata sandi, token JWT, string koneksi, atau log mentah yang mengandung kredensial. Samarkan informasi pribadi pada screenshot/log yang dipublikasikan. Repo dan layanan cloud dapat berubah setelah commit dokumentasi; pastikan SHA deploy terbaru cocok dengan kode yang diuji.
+
+### 8. Refleksi singkat
+
+SisaBaik mendukung pemanfaatan makanan berlebih melalui penawaran dengan harga khusus atau gratis. Nilai bagi pembeli ditunjukkan melalui kesempatan memperoleh makanan lebih terjangkau; nilai bagi penyedia melalui potensi pemulihan sebagian nilai stok, bukan klaim laba bersih. Bukti pesanan, pengambilan, dan pembayaran perlu dicatat sesuai transaksi yang benar-benar selesai. Perhitungan dashboard membantu memantau transaksi, namun tidak membuktikan sendiri besaran pengurangan limbah atau emisi. Dokumentasi harus memisahkan hasil tes yang sudah terbukti dari fitur yang belum diuji serta menjelaskan keterbatasan hosting gratis.
